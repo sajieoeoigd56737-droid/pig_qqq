@@ -1,9 +1,0 @@
-<?xml version="1.0" ?>
-<LOG_ROOT>
-	<PROJECT NAME="ap3216c">
-		<CBX_INST_ENTRY INSTANCE_NAME="|ap3216c|ap3216c_ctrl:ap3216c_ctrl_inst|lpm_divide:Div0" CBX_FILE_NAME="lpm_divide_5jm.tdf"/>
-		<CBX_INST_ENTRY INSTANCE_NAME="|ap3216c|ap3216c_ctrl:ap3216c_ctrl_inst|lpm_mult:Mult0|multcore:mult_core|mpar_add:padder|lpm_add_sub:adder[0]" CBX_FILE_NAME="add_sub_jgh.tdf"/>
-		<CBX_INST_ENTRY INSTANCE_NAME="|ap3216c|ap3216c_ctrl:ap3216c_ctrl_inst|lpm_mult:Mult0|multcore:mult_core|mpar_add:padder|lpm_add_sub:adder[1]" CBX_FILE_NAME="add_sub_jgh.tdf"/>
-		<CBX_INST_ENTRY INSTANCE_NAME="|ap3216c|ap3216c_ctrl:ap3216c_ctrl_inst|lpm_mult:Mult0|multcore:mult_core|mpar_add:padder|mpar_add:sub_par_add|lpm_add_sub:adder[0]" CBX_FILE_NAME="add_sub_ngh.tdf"/>
-	</PROJECT>
-</LOG_ROOT>
