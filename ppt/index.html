@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AP3216C 光感采集系统 · 课程设计答辩</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400&family=IBM+Plex+Mono:wght@300;400;500;600&family=Noto+Serif+SC:wght@300;400;500;600;700;900&family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* 🌊 靛蓝瓷 */
+    --ink:#0a1f3d;
+    --ink-rgb:10,31,61;
+    --paper:#f1f3f5;
+    --paper-rgb:241,243,245;
+    --paper-tint:#e4e8ec;
+    --ink-tint:#152a4a;
+
+    --mono:"IBM Plex Mono",ui-monospace,monospace;
+    --serif-en:"Playfair Display","Source Serif 4",Georgia,serif;
+    --serif-body-en:"Source Serif 4",Georgia,serif;
+    --serif-zh:"Noto Serif SC",source-han-serif-sc,serif;
+    --sans-zh:"Noto Sans SC",source-han-sans-sc,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{width:100%;height:100%;overflow:hidden;background:var(--ink);color:var(--paper);font-family:var(--sans-zh);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+
+  canvas.bg{position:fixed;inset:0;width:100vw;height:100vh;z-index:0;display:block;transition:opacity 1.2s ease}
+  canvas#bg-light{opacity:0}
+  canvas#bg-dark{opacity:1}
+  body.light-bg canvas#bg-light{opacity:1}
+  body.light-bg canvas#bg-dark{opacity:0}
+
+  #deck{position:fixed;inset:0;width:10000vw;height:100vh;display:flex;flex-wrap:nowrap;transition:transform .9s cubic-bezier(.77,0,.175,1);z-index:10;will-change:transform}
+  .slide{width:100vw;height:100vh;flex:0 0 100vw;position:relative;padding:6vh 6vw 10vh 6vw;display:flex;flex-direction:column;overflow:hidden}
+  .slide.light{color:var(--ink)}
+  .slide.dark{color:var(--paper)}
+
+  .slide::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;transition:background .7s ease}
+  .slide.light::before{background:rgba(var(--paper-rgb),.78);backdrop-filter:blur(3px)}
+  .slide.dark::before{background:rgba(var(--ink-rgb),.78);backdrop-filter:blur(3px)}
+  .slide.hero.light::before{background:rgba(var(--paper-rgb),.16);backdrop-filter:none}
+  .slide.hero.dark::before{background:rgba(var(--ink-rgb),.12);backdrop-filter:none}
+  .slide.hero::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none}
+  .slide.hero.light::after{background:linear-gradient(180deg,rgba(var(--paper-rgb),.28) 0%,rgba(var(--paper-rgb),0) 14%,rgba(var(--paper-rgb),0) 86%,rgba(var(--paper-rgb),.28) 100%)}
+  .slide.hero.dark::after{background:linear-gradient(180deg,rgba(var(--ink-rgb),.32) 0%,rgba(var(--ink-rgb),0) 14%,rgba(var(--ink-rgb),0) 86%,rgba(var(--ink-rgb),.32) 100%)}
+
+  .chrome{display:flex;justify-content:space-between;align-items:flex-start;font-family:var(--mono);font-size:12px;letter-spacing:.18em;text-transform:uppercase;opacity:.7}
+  .chrome .left,.chrome .right{display:flex;gap:2.4em;align-items:center}
+  .chrome .sep{width:40px;height:1px;background:currentColor;opacity:.4}
+  .foot{margin-top:auto;display:flex;justify-content:space-between;align-items:flex-end;font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;opacity:.55}
+  .foot .title{font-family:var(--serif-zh);font-weight:400;letter-spacing:.05em;text-transform:none;opacity:.75;font-size:13px}
+
+  .tag{display:inline-block;font-family:var(--mono);font-size:11px;letter-spacing:.24em;text-transform:uppercase;padding:6px 14px;border:1px solid currentColor;opacity:.85}
+  .rule{width:100%;height:1px;background:currentColor;opacity:.25;margin:3vh 0}
+  .rule.v{width:1px;height:100%;margin:0}
+
+  .kicker{font-family:var(--mono);font-size:12px;letter-spacing:.3em;text-transform:uppercase;opacity:.6;margin-bottom:2.6vh}
+  .display{font-family:var(--serif-en);font-weight:700;font-size:11vw;line-height:.92;letter-spacing:-.025em}
+  .display-zh{font-family:var(--serif-zh);font-weight:700;font-size:7.8vw;line-height:1.04;letter-spacing:-.005em}
+  .h1-zh{font-family:var(--serif-zh);font-weight:700;font-size:4.6vw;line-height:1.12;letter-spacing:-.005em}
+  .h2-zh{font-family:var(--serif-zh);font-weight:600;font-size:3.2vw;line-height:1.2;letter-spacing:0}
+  .h3-zh{font-family:var(--serif-zh);font-weight:500;font-size:1.9vw;line-height:1.35}
+  .body-zh{font-family:var(--sans-zh);font-weight:400;font-size:max(15px,1.22vw);line-height:1.75;opacity:.82;letter-spacing:.01em}
+  .body-serif{font-family:var(--serif-zh);font-weight:400;font-size:max(15px,1.3vw);line-height:1.65;opacity:.88}
+  .lead{font-family:var(--serif-zh);font-weight:400;font-size:1.9vw;line-height:1.4;opacity:.85}
+  .meta{font-family:var(--mono);font-size:max(11px,.88vw);letter-spacing:.16em;text-transform:uppercase;opacity:.6}
+  .big-num{font-family:var(--serif-en);font-weight:800;font-size:10vw;line-height:.85;letter-spacing:-.03em;font-feature-settings:"tnum"}
+  .mid-num{font-family:var(--serif-en);font-weight:700;font-size:5.5vw;line-height:.88;letter-spacing:-.02em;font-feature-settings:"tnum"}
+  .ghost{font-family:var(--serif-en);font-weight:900;font-size:34vw;line-height:.8;opacity:.06;letter-spacing:-.04em;position:absolute;font-feature-settings:"tnum"}
+  em{font-style:italic;font-family:var(--serif-en)}
+  .en{font-family:var(--serif-en);font-style:italic;font-weight:500}
+
+  .col{display:flex;flex-direction:column;gap:2.4vh}
+  .row{display:flex;align-items:center;gap:3vw}
+  .grid-6{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,1fr);gap:4vw 6vw;flex:1;align-content:center;padding:2vh 0}
+  .grid-9{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);gap:3vh 4vw;flex:1;align-content:center}
+  .grid-4{display:grid;grid-template-columns:repeat(2,1fr);grid-template-rows:repeat(2,1fr);gap:4vh 6vw;flex:1;align-content:center}
+  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:4vw;flex:1;align-content:center}
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:4vw;flex:1;align-items:center}
+  .split-55{display:grid;grid-template-columns:55fr 45fr;gap:5vw;flex:1;align-items:stretch}
+  .fill{flex:1}
+  .center{align-items:center;justify-content:center;text-align:center}
+  .bottom-left{position:absolute;left:6vw;bottom:9vh;max-width:50vw}
+  .bottom-right{position:absolute;right:6vw;bottom:9vh;max-width:50vw;text-align:right}
+  .top-right{position:absolute;right:6vw;top:6vh;text-align:right}
+
+  .stat{display:flex;flex-direction:column;gap:1vh;align-items:flex-start}
+  .stat .n{font-family:var(--serif-en);font-weight:800;font-size:8vw;line-height:.88;letter-spacing:-.03em;font-feature-settings:"tnum"}
+  .stat .l{font-family:var(--sans-zh);font-size:max(13px,1.05vw);opacity:.7;margin-top:1vh;font-weight:400;line-height:1.5}
+  .stat .m{font-family:var(--mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;opacity:.5;margin-bottom:.2vh}
+
+  .callout{padding:3vh 2.4vw;border-left:3px solid currentColor;position:relative;font-family:var(--serif-zh);font-size:max(15px,1.2vw);line-height:1.55;opacity:.92}
+  .slide.light .callout{background:rgba(var(--ink-rgb),.05)}
+  .slide.dark .callout{background:rgba(var(--paper-rgb),.06)}
+  .callout .cite{display:block;margin-top:1.6vh;font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;opacity:.6}
+  .callout .q-big{font-family:var(--serif-zh);font-weight:600;font-size:max(17px,1.6vw);line-height:1.42}
+
+  .plat{display:flex;flex-direction:column;justify-content:flex-end;padding:2vh 0;border-top:1px solid currentColor;border-color:rgba(127,127,127,.35)}
+  .plat .name{font-family:var(--serif-zh);font-weight:700;font-size:1.8vw;margin-bottom:.6vh}
+  .plat .nb{font-family:var(--serif-en);font-weight:700;font-size:3.2vw;letter-spacing:-.02em;line-height:1;font-feature-settings:"tnum"}
+  .plat .sub{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;opacity:.55;margin-top:.6vh}
+  .plat .fill{font-family:var(--sans-zh);font-weight:300;font-size:2.4vw;opacity:.28;letter-spacing:-.01em;line-height:1}
+
+  .rowline{display:grid;grid-template-columns:1fr 2fr 1fr;gap:2vw;padding:2.2vh 0;border-top:1px solid currentColor;align-items:center;border-color:rgba(127,127,127,.25)}
+  .rowline:last-child{border-bottom:1px solid currentColor;border-color:rgba(127,127,127,.25)}
+  .rowline .k{font-family:var(--serif-zh);font-weight:700;font-size:1.7vw}
+  .rowline .v{font-family:var(--sans-zh);font-weight:400;font-size:max(14px,1.2vw);opacity:.85;line-height:1.55}
+  .rowline .m{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;opacity:.6;justify-self:end}
+
+  .pillar{display:flex;flex-direction:column;gap:1.8vh}
+  .pillar .ic{font-family:var(--serif-en);font-style:italic;font-size:2.6vw;opacity:.45;font-weight:400}
+  .pillar .ic svg{width:2.8vw;height:2.8vw;stroke-width:1.2;opacity:.7}
+  .pillar .t{font-family:var(--serif-zh);font-weight:700;font-size:2.4vw;line-height:1.1}
+  .pillar .d{font-family:var(--sans-zh);font-weight:400;font-size:max(14px,1.1vw);opacity:.76;line-height:1.6}
+
+  .sign{font-family:var(--serif-en);font-style:italic;font-weight:500;font-size:2vw;opacity:.7}
+  .hi{position:relative;display:inline}
+  .slide.dark .hi::after{content:"";position:absolute;left:-.1em;right:-.1em;bottom:-.05em;height:.28em;background:rgba(var(--paper-rgb),.15);z-index:-1}
+  .slide.light .hi::after{content:"";position:absolute;left:-.1em;right:-.1em;bottom:-.05em;height:.28em;background:rgba(var(--ink-rgb),.08);z-index:-1}
+
+  .ico{width:1em;height:1em;display:inline-block;vertical-align:-.12em;stroke:currentColor;fill:none;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+  .ico-lg,.ico-md,.ico-sm{fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round}
+  .ico-lg{width:2.6vw;height:2.6vw;stroke-width:1.2;display:inline-block}
+  .ico-md{width:1.8vw;height:1.8vw;stroke-width:1.3;display:inline-block;vertical-align:-.4em}
+  .ico-sm{width:1.1vw;height:1.1vw;stroke-width:1.4;display:inline-block;vertical-align:-.15em;opacity:.7}
+
+  .img-slot{border:1.5px dashed rgba(127,127,127,.4);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:1vh;padding:2vh 2vw;font-family:var(--mono);font-size:10px;letter-spacing:.28em;text-transform:uppercase;opacity:.55;position:relative;aspect-ratio:16/9;width:100%;max-height:56vh;margin-inline:auto;box-sizing:border-box}
+  .img-slot::before{content:"";position:absolute;inset:8px;border:1px solid currentColor;opacity:.2}
+  .img-slot .plus{font-size:2vw;font-weight:300;opacity:.5;letter-spacing:0}
+  .img-slot .label{position:relative;z-index:2;text-align:center}
+  .img-slot.r-4x3{aspect-ratio:4/3}
+  .img-slot.r-3x2{aspect-ratio:3/2}
+  .img-slot.r-1x1{aspect-ratio:1/1}
+
+  .frame-img{overflow:hidden;position:relative;background:rgba(0,0,0,.04);box-sizing:border-box;width:100%;border-radius:4px}
+  .slide.dark .frame-img{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.12)}
+  .frame-img > img{width:100%;height:100%;object-fit:cover;object-position:top center;display:block}
+  .hardware-photo{height:22vh;background:#fff;border:1px solid rgba(255,255,255,.18)}
+  .hardware-photo > img{object-fit:contain;object-position:center}
+  .frame-cap{display:flex;justify-content:space-between;align-items:baseline;gap:1vw;margin-top:.8vh;font-family:var(--mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;opacity:.72}
+  .frame-cap .pf{font-family:var(--serif-zh);font-weight:600;font-size:max(13px,1vw);letter-spacing:.04em;text-transform:none;opacity:.94}
+  .frame-cap .nb{font-family:var(--serif-en);font-style:italic;font-size:max(15px,1.2vw);letter-spacing:.02em;text-transform:none;opacity:.88}
+  .frame-cap .idx{font-family:var(--mono);opacity:.5}
+  figure.tile{display:flex;flex-direction:column;margin:0;min-width:0}
+  figure.tile > .frame-img{flex:0 0 auto}
+
+  #nav{position:fixed;left:50%;bottom:2.6vh;transform:translateX(-50%);z-index:30;display:flex;gap:10px;padding:8px 14px;border-radius:999px;background:rgba(0,0,0,.18);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+  #nav .dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.3);cursor:pointer;transition:all .3s ease;border:0;padding:0}
+  #nav .dot:hover{background:rgba(255,255,255,.5);transform:scale(1.15)}
+  #nav .dot.active{background:rgba(255,255,255,.95);width:22px;border-radius:999px}
+  body.light-bg #nav{background:rgba(255,255,255,.25)}
+  body.light-bg #nav .dot{background:rgba(var(--ink-rgb),.25)}
+  body.light-bg #nav .dot.active{background:rgba(var(--ink-rgb),.9)}
+  #hint{position:fixed;bottom:3vh;right:3vw;z-index:30;font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;opacity:.4;mix-blend-mode:difference;color:#aaa}
+
+  /* LAYOUTS API */
+  .frame{flex:1;display:flex;flex-direction:column;min-height:0;overflow:hidden}
+  .frame.grid-2-7-5,
+  .frame.grid-2-6-6,
+  .frame.grid-2-8-4,
+  .frame.grid-3-3,
+  .frame.grid-6{display:grid}
+
+  .h-hero{font-family:var(--serif-zh);font-weight:900;font-size:10vw;line-height:.96;letter-spacing:-.02em}
+  .h-xl{font-family:var(--serif-zh);font-weight:700;font-size:6.2vw;line-height:1.08;letter-spacing:-.01em}
+  .h-sub{font-family:var(--serif-zh);font-weight:500;font-size:3.1vw;line-height:1.25;letter-spacing:0;opacity:.7}
+  .h-md{font-family:var(--serif-zh);font-weight:600;font-size:2.3vw;line-height:1.3}
+  .h-hero-en,.h-xl-en{font-family:var(--serif-en);letter-spacing:-.025em}
+
+  .lead{font-family:var(--serif-zh);font-weight:400;font-size:1.75vw;line-height:1.5;opacity:.86}
+
+  .meta-row{display:flex;gap:1.2em;align-items:baseline;flex-wrap:wrap;font-family:var(--mono);font-size:max(12px,.92vw);letter-spacing:.16em;text-transform:uppercase;opacity:.6}
+
+  .stat-card{display:flex;flex-direction:column;gap:.8vh;align-items:flex-start;padding-top:1.6vh;border-top:1px solid currentColor;border-color:rgba(127,127,127,.3)}
+  .stat-card .stat-label{font-family:var(--mono);font-size:max(10px,.78vw);letter-spacing:.24em;text-transform:uppercase;opacity:.55}
+  .stat-card .stat-nb{font-family:var(--serif-en);font-weight:800;font-size:5.8vw;line-height:.9;letter-spacing:-.03em;font-feature-settings:"tnum";margin-top:.4vh}
+  .stat-card .stat-nb .stat-unit{font-family:var(--serif-zh);font-weight:500;font-size:.38em;letter-spacing:0;opacity:.72;margin-left:.14em}
+  .stat-card .stat-note{font-family:var(--sans-zh);font-weight:400;font-size:max(13px,1.05vw);line-height:1.5;opacity:.72;margin-top:.6vh}
+  .grid-4 .stat-card .stat-nb{font-size:5vw}
+  .grid-3 .stat-card .stat-nb{font-size:6.8vw}
+
+  .pipeline-section{margin-top:4.4vh;padding-top:2.8vh;border-top:1px dashed rgba(127,127,127,.32)}
+  .pipeline-section:first-of-type{border-top:0;padding-top:0;margin-top:3vh}
+  .pipeline-label{font-family:var(--mono);font-size:max(11px,.85vw);letter-spacing:.24em;text-transform:uppercase;opacity:.62;margin-bottom:2.2vh}
+  .pipeline{display:grid;grid-template-columns:repeat(5,1fr);gap:1.2vw}
+  .pipeline[data-cols="1"]{grid-template-columns:1fr}
+  .pipeline[data-cols="2"]{grid-template-columns:repeat(2,1fr)}
+  .pipeline[data-cols="3"]{grid-template-columns:repeat(3,1fr)}
+  .pipeline[data-cols="4"]{grid-template-columns:repeat(4,1fr)}
+  .pipeline[data-cols="6"]{grid-template-columns:repeat(6,1fr)}
+  .step{display:flex;flex-direction:column;gap:.8vh;padding-top:1.4vh;border-top:1px solid currentColor;border-color:rgba(127,127,127,.35)}
+  .step-nb{font-family:var(--serif-en);font-style:italic;font-weight:500;font-size:1.15vw;opacity:.45}
+  .step-title{font-family:var(--sans-zh);font-weight:700;font-size:1.55vw;letter-spacing:.01em;line-height:1.2}
+  .step-desc{font-family:var(--sans-zh);font-weight:400;font-size:max(12px,.95vw);line-height:1.45;opacity:.72}
+  .module-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(260px,28vw);gap:2.4vw;align-items:end;margin-bottom:1.5vh}
+  .module-head .h-xl{font-size:min(5.2vw,74px);line-height:1.02;overflow-wrap:anywhere}
+  .module-role{border-left:2px solid currentColor;padding-left:1.3vw;font-family:var(--sans-zh);font-size:max(13px,.98vw);line-height:1.55;opacity:.8}
+  .module-role strong{display:block;font-family:var(--serif-zh);font-size:max(16px,1.35vw);line-height:1.25;opacity:.95;margin-bottom:.6vh}
+  .mechanism-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.2vw;margin-top:2vh}
+  .mechanism-card{padding-top:1.25vh;border-top:1px solid rgba(127,127,127,.36);min-width:0}
+  .mechanism-card .m-title{font-family:var(--serif-zh);font-weight:700;font-size:max(14px,1.08vw);line-height:1.25;margin-bottom:.65vh}
+  .mechanism-card .m-desc{font-family:var(--sans-zh);font-size:max(11px,.82vw);line-height:1.42;opacity:.72}
+  .module-slide .pipeline-section{margin-top:2.2vh;padding-top:1.55vh}
+  .module-slide .pipeline-section:first-of-type{margin-top:1.6vh}
+  .module-slide .pipeline-label{font-size:max(10px,.76vw);margin-bottom:1.25vh}
+  .module-slide .pipeline{gap:1vw}
+  .module-slide .step{gap:.45vh;padding-top:.95vh}
+  .module-slide .step-nb{font-size:max(10px,.72vw)}
+  .module-slide .step-title{font-size:max(13px,1.04vw)}
+  .module-slide .step-desc{font-size:max(11px,.78vw);line-height:1.34}
+  .sensor-port-figure{display:flex;justify-content:center;margin:1.4vh 0 1.6vh}
+  .sensor-port-figure img{width:min(64vw,610px);max-height:30vh;object-fit:contain;background:#fff;border:1px solid rgba(var(--ink-rgb),.18);box-shadow:0 10px 28px rgba(var(--ink-rgb),.08)}
+  .signal-section{margin-top:1vh;padding-top:1.1vh;border-top:1px dashed rgba(127,127,127,.32)}
+  .signal-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:1.05vw}
+  .signal-card{min-width:0;padding-top:.9vh;border-top:1px solid rgba(127,127,127,.32)}
+  .signal-name{font-family:var(--mono);font-weight:600;font-size:max(10px,.78vw);line-height:1.2;letter-spacing:.04em;overflow-wrap:anywhere}
+  .signal-dir{display:inline-block;margin:.45vh 0 .35vh;font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;opacity:.5}
+  .signal-desc{font-family:var(--sans-zh);font-size:max(10px,.76vw);line-height:1.34;opacity:.72}
+  .architecture-slide .h-xl{font-size:min(5.2vw,82px);line-height:1}
+  .architecture-slide .architecture-diagram{width:100%;height:min(42vh,520px);margin-top:1.6vh;object-fit:contain;object-position:center;background:#fff;border:1px solid rgba(var(--ink-rgb),.12);display:block}
+  .architecture-slide .pipeline-section{margin-top:1.4vh;padding-top:1vh}
+  .architecture-slide .pipeline-section:first-of-type{margin-top:1.4vh}
+  .architecture-slide .pipeline-label{margin-bottom:.8vh;font-size:max(10px,.72vw)}
+  .architecture-slide .pipeline{gap:1vw}
+  .architecture-slide .step{gap:.35vh;padding-top:.8vh}
+  .architecture-slide .step-nb{font-size:max(10px,.72vw)}
+  .architecture-slide .step-title{font-size:max(14px,1.08vw)}
+  .architecture-slide .step-desc{font-size:max(11px,.78vw);line-height:1.3}
+  .architecture-slide .pipeline-row{display:grid;grid-template-columns:2fr 1fr;gap:2vw;margin-top:1.4vh;padding-top:1vh;border-top:1px dashed rgba(127,127,127,.32)}
+  .architecture-slide .pipeline-row .pipeline-section{margin-top:0;padding-top:0;border-top:0}
+  .architecture-slide .foot{position:absolute;left:6vw;right:6vw;bottom:5.5vh}
+  .architecture-slide .link-breakdown{margin-top:1.2vh;border-top:1px dashed rgba(127,127,127,.32)}
+  .architecture-slide .link-row{display:grid;grid-template-columns:minmax(128px,15vw) 1fr;gap:1.8vw;padding:1.05vh 0;border-bottom:1px solid rgba(127,127,127,.24);align-items:start}
+  .architecture-slide .link-name{font-family:var(--mono);font-size:max(10px,.78vw);letter-spacing:.22em;text-transform:uppercase;opacity:.68;line-height:1.5}
+  .architecture-slide .link-name strong{display:block;font-family:var(--serif-zh);font-size:max(15px,1.15vw);letter-spacing:.04em;text-transform:none;opacity:.96;margin-bottom:.2vh}
+  .architecture-slide .link-explain{font-family:var(--sans-zh);font-size:max(12px,.86vw);line-height:1.42;opacity:.78}
+  .architecture-slide .module-flow{display:flex;align-items:center;gap:.55vw;flex-wrap:wrap;margin-top:.65vh}
+  .architecture-slide .module-chip{font-family:var(--mono);font-size:max(10px,.74vw);letter-spacing:.05em;padding:.42vh .62vw;border:1px solid rgba(var(--ink-rgb),.22);background:rgba(var(--ink-rgb),.035);font-weight:600}
+  .architecture-slide .flow-arrow{font-family:var(--mono);font-size:max(10px,.72vw);opacity:.42}
+
+  .grid-2-7-5{display:grid;grid-template-columns:7fr 5fr;gap:3vw 4vh;align-items:start}
+  .grid-2-6-6{display:grid;grid-template-columns:1fr 1fr;gap:3vw 4vh;align-items:start}
+  .grid-2-8-4{display:grid;grid-template-columns:8fr 4fr;gap:3vw 4vh;align-items:start}
+  .grid-3-3{display:grid;grid-template-columns:repeat(3,1fr);grid-auto-rows:minmax(0,1fr);gap:2.4vh 2vw}
+
+  figure.frame-img{margin:0;display:flex;flex-direction:column;min-width:0}
+  .img-cap{display:block;margin-top:.8vh;font-family:var(--mono);font-size:max(10px,.8vw);letter-spacing:.22em;text-transform:uppercase;opacity:.6}
+  .callout-src{display:block;margin-top:1.6vh;font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;opacity:.6}
+
+  .chrome{font-family:var(--mono);font-size:max(11px,.78vw);letter-spacing:.2em;text-transform:uppercase;opacity:.62}
+  .foot{font-family:var(--mono);font-size:max(11px,.78vw);letter-spacing:.18em;text-transform:uppercase;opacity:.5}
+
+  [data-anim]{opacity:0}
+  [data-anim="left"]{transform:translateX(-24px)}
+  [data-anim="right"]{transform:translateX(24px)}
+  [data-anim="line"]{opacity:0;transform:translateY(10px)}
+  [data-animate="pipeline"] [data-anim]{opacity:.15}
+
+  @media (max-width:900px){
+    .display{font-size:16vw}
+    .display-zh{font-size:12vw}
+    .h1-zh{font-size:7vw}
+    .h-hero{font-size:14vw}
+    .h-xl{font-size:9vw}
+    .pipeline{grid-template-columns:repeat(2,1fr)}
+    .grid-2-7-5,.grid-2-6-6,.grid-2-8-4{grid-template-columns:1fr}
+    .module-slide .module-head{grid-template-columns:minmax(0,1fr) minmax(220px,42vw);gap:1.8vw;margin-bottom:.8vh}
+    .module-slide .module-head .h-xl{font-size:min(5.2vw,38px)}
+    .module-slide .module-role{font-size:max(11px,.9vw);line-height:1.38}
+    .module-slide .module-role strong{font-size:max(13px,1.1vw);margin-bottom:.3vh}
+    .module-slide .pipeline{grid-template-columns:repeat(5,1fr)}
+    .module-slide .pipeline[data-cols="3"]{grid-template-columns:repeat(3,1fr)}
+    .module-slide .pipeline[data-cols="4"]{grid-template-columns:repeat(4,1fr)}
+    .module-slide .mechanism-grid{grid-template-columns:repeat(4,1fr);margin-top:1.2vh}
+    .module-slide .pipeline-section{margin-top:1.25vh;padding-top:.9vh}
+    .module-slide .pipeline-section:first-of-type{margin-top:1vh}
+    .module-slide .pipeline-label{font-size:9px;margin-bottom:.8vh;letter-spacing:.18em}
+    .module-slide .step{gap:.25vh;padding-top:.65vh}
+    .module-slide .step-nb{font-size:9px}
+    .module-slide .step-title{font-size:10px;line-height:1.15}
+    .module-slide .step-desc{font-size:9px;line-height:1.25}
+    .module-slide .mechanism-card{padding-top:.7vh}
+    .module-slide .mechanism-card .m-title{font-size:10px;margin-bottom:.35vh}
+    .module-slide .mechanism-card .m-desc{font-size:9px;line-height:1.25}
+    .sensor-port-figure{margin:.9vh 0 1vh}
+    .sensor-port-figure img{width:min(82vw,520px);max-height:26vh}
+    .signal-section{margin-top:.8vh;padding-top:.8vh}
+    .signal-grid{grid-template-columns:repeat(4,1fr);gap:.85vw}
+    .signal-card{padding-top:.55vh}
+    .signal-name{font-size:9px}
+    .signal-dir{font-size:8px;margin:.28vh 0 .2vh;letter-spacing:.12em}
+    .signal-desc{font-size:8.5px;line-height:1.2}
+  }
+</style>
+</head>
+<body>
+
+<canvas id="bg-dark" class="bg"></canvas>
+<canvas id="bg-light" class="bg"></canvas>
+<div id="hint">← → 翻页 · ESC 索引</div>
+
+<div id="deck">
+
+<!-- P01 · 封面 · hero dark -->
+<section class="slide hero dark">
+  <div class="chrome">
+    <div>数字电路课程设计 · 2026.06</div>
+    <div>Vol.01</div>
+  </div>
+  <div class="frame" style="display:grid; gap:4vh; align-content:center; min-height:80vh">
+    <div class="kicker" data-anim>课程设计答辩 · Digital Circuit Design</div>
+    <h1 class="h-hero" data-anim>AP3216C</h1>
+    <h2 class="h-sub" data-anim>基于 FPGA 的光感与距离采集系统</h2>
+    <p class="lead" style="max-width:60vw" data-anim>
+      以 Cyclone IV FPGA 为核心，通过 I2C 总线驱动 AP3216C 三合一光学传感器，实现环境光照度与近距离的实时采集与数码管显示。
+    </p>
+    <div class="meta-row" data-anim>
+      <span>课程设计答辩</span><span>·</span><span>Quartus Prime</span><span>·</span><span>Cyclone IV</span><span>·</span><span>2026.06</span>
+    </div>
+  </div>
+  <div class="foot">
+    <div>数字电路课程设计</div>
+    <div>— 2026 —</div>
+  </div>
+</section>
+
+<!-- P02 · 项目介绍 · light -->
+<section class="slide light">
+  <div class="chrome">
+    <div>项目介绍 · Introduction</div>
+    <div>02 / 10</div>
+  </div>
+  <div class="frame" style="justify-content:center; padding:0 0 3vh 0">
+    <div class="kicker" data-anim>Introduction · 逐句拆解</div>
+    <p class="lead" style="max-width:80vw; margin-bottom:4vh" data-anim>
+      以 Cyclone IV FPGA 为核心，通过 I2C 总线驱动 AP3216C 三合一光学传感器，实现环境光照度与近距离的实时采集与数码管显示。
+    </p>
+
+    <div style="display:flex; flex-direction:column; max-width:82vw">
+
+      <div data-anim style="display:grid; grid-template-columns:22vw 1fr; gap:2vw; padding:2.2vh 0; border-top:1px solid rgba(127,127,127,.2); align-items:baseline">
+        <div style="font-family:var(--serif-zh); font-weight:700; font-size:max(15px,1.25vw)">Cyclone IV FPGA</div>
+        <div style="font-family:var(--sans-zh); font-size:max(14px,1.1vw); line-height:1.65; opacity:.78">相当于整个系统的大脑。它不是普通的芯片——内部逻辑是我们用代码"烧进去"的，负责控制所有时序和数据流。</div>
+      </div>
+
+      <div data-anim style="display:grid; grid-template-columns:22vw 1fr; gap:2vw; padding:2.2vh 0; border-top:1px solid rgba(127,127,127,.2); align-items:baseline">
+        <div style="font-family:var(--serif-zh); font-weight:700; font-size:max(15px,1.25vw)">I2C 总线</div>
+        <div style="font-family:var(--sans-zh); font-size:max(14px,1.1vw); line-height:1.65; opacity:.78">只用两根线（时钟线 SCL + 数据线 SDA）就能让 FPGA 和传感器"对话"的通信协议。本项目的 I2C 控制器完全由 Verilog 从零实现。</div>
+      </div>
+
+      <div data-anim style="display:grid; grid-template-columns:22vw 1fr; gap:2vw; padding:2.2vh 0; border-top:1px solid rgba(127,127,127,.2); align-items:baseline">
+        <div style="font-family:var(--serif-zh); font-weight:700; font-size:max(15px,1.25vw)">AP3216C 三合一传感器</div>
+        <div style="font-family:var(--sans-zh); font-size:max(14px,1.1vw); line-height:1.65; opacity:.78">一颗芯片同时集成了三种功能：测光亮（ALS）、测距离（PS）、感知红外（IR）。我们用到其中两种：光照度和近距离。</div>
+      </div>
+
+      <div data-anim style="display:grid; grid-template-columns:22vw 1fr; gap:2vw; padding:2.2vh 0; border-top:1px solid rgba(127,127,127,.2); align-items:baseline">
+        <div style="font-family:var(--serif-zh); font-weight:700; font-size:max(15px,1.25vw)">实时采集与数码管显示</div>
+        <div style="font-family:var(--sans-zh); font-size:max(14px,1.1vw); line-height:1.65; opacity:.78">FPGA 周期性地把两路数据从传感器读出来，驱动 6 位数码管实时显示。按下按键可切换显示光照值还是距离值。</div>
+      </div>
+
+    </div>
+  </div>
+  <div class="foot">
+    <div>Page 02 · 项目介绍</div>
+    <div>FPGA · I2C · AP3216C</div>
+  </div>
+</section>
+
+<!-- P03 · 硬件介绍 · dark -->
+<section class="slide dark">
+  <div class="chrome">
+    <div>硬件组成 · Hardware</div>
+    <div>03 / 10</div>
+  </div>
+  <div class="frame" style="padding-top:4vh">
+    <div class="kicker" data-anim>Hardware · 用到的硬件</div>
+    <h2 class="h-xl" style="font-size:52px" data-anim>硬件介绍</h2>
+
+    <div class="grid-3" style="margin-top:4vh; align-items:start; gap:4vw">
+
+      <!-- 野火FPGA -->
+      <div data-anim style="display:flex; flex-direction:column; gap:2vh">
+        <div class="frame-img hardware-photo">
+          <img src="images/fpga-board.jpg" alt="野火 FPGA 开发板整体图">
+        </div>
+        <div style="padding-top:1.6vh; border-top:1px solid rgba(255,255,255,.2)">
+          <div style="font-family:var(--serif-zh); font-weight:700; font-size:max(16px,1.5vw); margin-bottom:1.2vh">野火 FPGA 开发板</div>
+          <div style="font-family:var(--sans-zh); font-size:max(13px,1vw); line-height:1.65; opacity:.72">
+            搭载 Intel Cyclone IV 系列芯片，50MHz 系统时钟。相当于整个项目的大脑——I2C 通信、状态机采样、数码管驱动，所有逻辑都运行在它上面。
+          </div>
+        </div>
+      </div>
+
+      <!-- AP3216C -->
+      <div data-anim style="display:flex; flex-direction:column; gap:2vh">
+        <div class="frame-img hardware-photo">
+          <img src="images/ap3216c-sensor.jpg" alt="AP3216C 环境光传感器局部图">
+        </div>
+        <div style="padding-top:1.6vh; border-top:1px solid rgba(255,255,255,.2)">
+          <div style="font-family:var(--serif-zh); font-weight:700; font-size:max(16px,1.5vw); margin-bottom:1.2vh">AP3216C 传感器</div>
+          <div style="font-family:var(--sans-zh); font-size:max(13px,1vw); line-height:1.65; opacity:.72">
+            一颗芯片同时集成了三种传感能力：测光亮度（ALS）、测近距离（PS）、感知红外（IR）。通过 I2C 协议和 FPGA 通信，是整个系统的"眼睛"。
+          </div>
+        </div>
+      </div>
+
+      <!-- 数码管 -->
+      <div data-anim style="display:flex; flex-direction:column; gap:2vh">
+        <div class="frame-img hardware-photo">
+          <img src="images/seven-segment-display.jpg" alt="6 位数码管模块局部图">
+        </div>
+        <div style="padding-top:1.6vh; border-top:1px solid rgba(255,255,255,.2)">
+          <div style="font-family:var(--serif-zh); font-weight:700; font-size:max(16px,1.5vw); margin-bottom:1.2vh">6 位数码管</div>
+          <div style="font-family:var(--sans-zh); font-size:max(13px,1vw); line-height:1.65; opacity:.72">
+            通过 74HC595 移位寄存器驱动的 6 位共阳数码管，用于实时显示采集到的数值。按下按键可在光照度和距离值之间切换显示。
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <div class="foot">
+    <div>Page 03 · 硬件组成</div>
+    <div>AP3216C · FPGA · 数码管</div>
+  </div>
+</section>
+
+<!-- P04 · 系统架构 · light -->
+<section class="slide light architecture-slide">
+  <div class="chrome">
+    <div>系统架构 · Architecture</div>
+    <div>04 / 10</div>
+  </div>
+  <div class="frame" style="padding-top:1vh">
+    <div class="kicker" data-anim>Data Pipeline · 数据链路</div>
+    <h2 class="h-xl" data-anim>总体框架</h2>
+    <img class="architecture-diagram" src="assets/system-framework.png" alt="AP3216C FPGA 系统总体框架图" data-anim>
+
+    <div class="link-breakdown">
+      <div class="link-row" data-anim>
+        <div class="link-name"><strong>采集链路</strong>Acquisition</div>
+        <div>
+          <div class="link-explain">通过 ap3216c_ctrl 调度 i2c_ctrl，经 I2C 总线控制 AP3216C 传感器完成环境光强 ALS 与物体距离 PS 的测量，并读取数据送入 key_ctrl。</div>
+          <div class="module-flow">
+            <span class="module-chip">ap3216c_ctrl</span><span class="flow-arrow">→</span><span class="module-chip">i2c_ctrl</span><span class="flow-arrow">→</span><span class="module-chip">AP3216C</span><span class="flow-arrow">→</span><span class="module-chip">ALS / PS data</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="link-row" data-anim>
+        <div class="link-name"><strong>按键交互链路</strong>Key Interaction</div>
+        <div>
+          <div class="link-explain">key_filter 对按键输入进行消抖，输出稳定有效的 key_flag，key_ctrl 根据该信号选择输出 ALS 数据或 PS 数据。</div>
+          <div class="module-flow">
+            <span class="module-chip">key_in</span><span class="flow-arrow">→</span><span class="module-chip">key_filter</span><span class="flow-arrow">→</span><span class="module-chip">key_flag</span><span class="flow-arrow">→</span><span class="module-chip">key_ctrl</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="link-row" data-anim>
+        <div class="link-name"><strong>显示链路</strong>Display</div>
+        <div>
+          <div class="link-explain">key_ctrl 输出选中的 20-bit 显示数据，交给 seg_595_dynamic 生成数码管动态扫描时序，将采集结果显示出来。</div>
+          <div class="module-flow">
+            <span class="module-chip">key_ctrl</span><span class="flow-arrow">→</span><span class="module-chip">data_out[19:0]</span><span class="flow-arrow">→</span><span class="module-chip">seg_595_dynamic</span><span class="flow-arrow">→</span><span class="module-chip">6 位数码管</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="foot">
+    <div>Page 04 · 系统模块</div>
+    <div>5 Modules</div>
+  </div>
+</section>
+
+<!-- P05 · 章节幕封 · hero light -->
+<section class="slide hero light">
+  <div class="chrome">
+    <div>核心设计 · Core Design</div>
+    <div>Act II · 05 / 10</div>
+  </div>
+  <div class="frame" style="display:grid; gap:6vh; align-content:center; min-height:80vh">
+    <div class="kicker" data-anim>Act II</div>
+    <h1 class="h-hero" style="font-size:8.5vw" data-anim>核心设计</h1>
+    <p class="lead" style="max-width:55vw" data-anim>
+      I2C 协议实现、8 状态传感器控制状态机与 595 数码管驱动。
+    </p>
+  </div>
+  <div class="foot">
+    <div>三个核心模块 · Three Modules</div>
+    <div>— · —</div>
+  </div>
+</section>
+
+<!-- P06 · I2C通信 · dark -->
+<section class="slide dark module-slide">
+  <div class="chrome">
+    <div>I2C 主机驱动 · RTL Module</div>
+    <div>06 / 10</div>
+  </div>
+  <div class="frame" style="padding-top:3vh">
+    <div class="kicker" data-anim>Module · i2c_ctrl</div>
+    <div class="module-head">
+      <h2 class="h-xl" data-anim>i2c_ctrl</h2>
+      <div class="module-role" data-anim>
+        <strong>I2C 主机驱动</strong>
+        把 `ap3216c_ctrl` 给出的读写请求翻译成 AP3216C 的 SCL/SDA 总线时序，完成单字节寄存器写入与单字节寄存器读取。
+      </div>
+    </div>
+
+    <div class="pipeline-section">
+      <div class="pipeline-label">一次写事务 · wr_en=1，配置寄存器</div>
+      <div class="pipeline">
+        <div class="step" data-anim>
+          <div class="step-nb">01</div>
+          <div class="step-title">START_1</div>
+          <div class="step-desc">`i2c_start` 触发后进入起始状态，SCL 高电平期间把 SDA 拉低。</div>
+        </div>
+        <div class="step" data-anim>
+          <div class="step-nb">02</div>
+          <div class="step-title">SEND_D_ADDR</div>
+          <div class="step-desc">先发送 7 位设备地址 `0011110`，第 8 位写方向置 0。</div>
+        </div>
+        <div class="step" data-anim>
+          <div class="step-nb">03</div>
+          <div class="step-title">SEND_B_ADDR_L</div>
+          <div class="step-desc">`addr_num=0`，只发低 8 位寄存器地址；AP3216C 用 8 位寄存器地址。</div>
+        </div>
+        <div class="step" data-anim>
+          <div class="step-nb">04</div>
+          <div class="step-title">WR_DATA</div>
+          <div class="step-desc">把 `wr_data[7:0]` 从高位到低位送上 SDA，例：`0x03` 开启 ALS 与 PS。</div>
+        </div>
+        <div class="step" data-anim>
+          <div class="step-nb">05</div>
+          <div class="step-title">ACK + STOP</div>
+          <div class="step-desc">每个字节后释放 SDA 采 ACK；STOP 结束时打一拍 `i2c_end`。</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pipeline-section">
+      <div class="pipeline-label">一次读事务 · rd_en=1，寄存器寻址后重复起始</div>
+      <div class="pipeline" data-cols="4">
+        <div class="step" data-anim>
+          <div class="step-nb">06</div>
+          <div class="step-title">Write Address</div>
+          <div class="step-desc">先按写方向发送设备地址与 `byte_addr`，把传感器内部地址指针定位到目标寄存器。</div>
+        </div>
+        <div class="step" data-anim>
+          <div class="step-nb">07</div>
+          <div class="step-title">START_2</div>
+          <div class="step-desc">不释放总线，产生重复起始，再发送设备地址，方向位改为 1。</div>
+        </div>
+        <div class="step" data-anim>
+          <div class="step-nb">08</div>
+          <div class="step-title">RD_DATA</div>
+          <div class="step-desc">读取阶段 `sda_en=0`，SDA 变高阻；在 `cnt_i2c_clk=2` 相位采样 8 位数据。</div>
+        </div>
+        <div class="step" data-anim>
+          <div class="step-nb">09</div>
+          <div class="step-title">N_ACK + STOP</div>
+          <div class="step-desc">主机不再继续读，所以回 NACK；STOP 后 `rd_data` 锁存并输出完成脉冲。</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mechanism-grid">
+      <div class="mechanism-card" data-anim>
+        <div class="m-title">时钟分频</div>
+        <div class="m-desc">50MHz `sys_clk` 经 `CNT_CLK_MAX` 分频得到内部 `i2c_clk`，再用 4 个相位控制一个 SCL 周期，输出 250kHz SCL。</div>
+      </div>
+      <div class="mechanism-card" data-anim>
+        <div class="m-title">位级节拍</div>
+        <div class="m-desc">`cnt_i2c_clk` 管 SCL 高低相位，`cnt_bit` 管字节内 0~7 位，保证 SDA 在 SCL 低电平换位、高电平稳定。</div>
+      </div>
+      <div class="mechanism-card" data-anim>
+        <div class="m-title">ACK 判定</div>
+        <div class="m-desc">进入 ACK 状态时主机释放 SDA，若从机在采样相位拉低 SDA，则 `ack=0`，状态机继续推进。</div>
+      </div>
+      <div class="mechanism-card" data-anim>
+        <div class="m-title">握手边界</div>
+        <div class="m-desc">上层只需要给 `wr_en/rd_en` 和一拍 `i2c_start`；底层完成 START、地址、数据、STOP 后用一拍 `i2c_end` 交还控制权。</div>
+      </div>
+    </div>
+  </div>
+  <div class="foot">
+    <div>Page 06 · i2c_ctrl:i2c_ctrl_inst</div>
+    <div>DEVICE_ADDR=7'b0011110 · SCL=250kHz</div>
+  </div>
+</section>
+
+<!-- P07 · 传感器状态机 · light -->
+<section class="slide light module-slide">
+  <div class="chrome">
+    <div>传感器采集控制 · RTL Module</div>
+    <div>07 / 10</div>
+  </div>
+  <div class="frame" style="padding-top:3vh">
+    <div class="kicker" data-anim>Module · ap3216c_ctrl</div>
+    <div class="module-head">
+      <h2 class="h-xl" data-anim>ap3216c_ctrl</h2>
+      <div class="module-role" data-anim>
+        <strong>AP3216C 采集状态机</strong>
+        负责传感器上电配置、PS/ALS 转换等待、寄存器读请求调度、原始字节拼接和最终采集值输出。
+      </div>
+    </div>
+
+    <div class="sensor-port-figure" data-anim>
+      <img src="images/ap3216c-ctrl-ports.jpg" alt="ap3216c_ctrl 模块输入输出信号图">
+    </div>
+
+    <div class="signal-section">
+      <div class="pipeline-label">端口信号功能注释 · Inputs / Outputs</div>
+      <div class="signal-grid">
+        <div class="signal-card" data-anim>
+          <div class="signal-name">i2c_clk</div>
+          <span class="signal-dir">input</span>
+          <div class="signal-desc">I2C 驱动时钟，状态机、等待计数器和输出寄存器都在该时钟下推进。</div>
+        </div>
+        <div class="signal-card" data-anim>
+          <div class="signal-name">sys_rst_n</div>
+          <span class="signal-dir">input</span>
+          <div class="signal-desc">低有效复位。清零状态、等待计数、读写控制信号和 PS/ALS 输出缓存。</div>
+        </div>
+        <div class="signal-card" data-anim>
+          <div class="signal-name">i2c_end</div>
+          <span class="signal-dir">input</span>
+          <div class="signal-desc">底层 `i2c_ctrl` 的事务完成脉冲。每次读写结束后驱动状态机跳到下一步。</div>
+        </div>
+        <div class="signal-card" data-anim>
+          <div class="signal-name">rd_data[7:0]</div>
+          <span class="signal-dir">input</span>
+          <div class="signal-desc">I2C 读回的 8 位数据。按当前状态分别写入 PS 低/高位或 ALS 低/高字节。</div>
+        </div>
+        <div class="signal-card" data-anim>
+          <div class="signal-name">wr_en</div>
+          <span class="signal-dir">output</span>
+          <div class="signal-desc">写使能。配置阶段拉高，通知 `i2c_ctrl` 执行寄存器写操作。</div>
+        </div>
+        <div class="signal-card" data-anim>
+          <div class="signal-name">rd_en</div>
+          <span class="signal-dir">output</span>
+          <div class="signal-desc">读使能。读取 PS/ALS 寄存器时拉高，通知 `i2c_ctrl` 执行寄存器读操作。</div>
+        </div>
+        <div class="signal-card" data-anim>
+          <div class="signal-name">i2c_start</div>
+          <span class="signal-dir">output</span>
+          <div class="signal-desc">启动脉冲。每个读写状态只打一拍，作为底层 I2C 事务的开始命令。</div>
+        </div>
+        <div class="signal-card" data-anim>
+          <div class="signal-name">byte_addr[15:0]</div>
+          <span class="signal-dir">output</span>
+          <div class="signal-desc">目标寄存器地址。配置写 `0x00`，PS 读 `0x0E/0x0F`，ALS 读 `0x0C/0x0D`。</div>
+        </div>
+        <div class="signal-card" data-anim>
+          <div class="signal-name">wr_data[7:0]</div>
+          <span class="signal-dir">output</span>
+          <div class="signal-desc">写入寄存器的数据。配置 AP3216C 时向 `0x00` 写 `0x03`，打开 ALS 与 PS。</div>
+        </div>
+        <div class="signal-card" data-anim>
+          <div class="signal-name">ps_data[9:0]</div>
+          <span class="signal-dir">output</span>
+          <div class="signal-desc">接近传感器结果。由 `0x0E[3:0]` 与 `0x0F[5:0]` 拼成 10 位距离数据。</div>
+        </div>
+        <div class="signal-card" data-anim>
+          <div class="signal-name">als_data[15:0]</div>
+          <span class="signal-dir">output</span>
+          <div class="signal-desc">环境光结果。由 `0x0C/0x0D` 拼成 16 位原始值后按 `*35/100` 换算输出。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="foot">
+    <div>Page 07 · ap3216c_ctrl:ap3216c_ctrl_inst</div>
+    <div>8-state FSM · PS 10bit · ALS 16bit</div>
+  </div>
+</section>
+
+<!-- P08 · 数码管显示 · dark -->
+<section class="slide dark">
+  <div class="chrome">
+    <div>显示驱动 · Display</div>
+    <div>08 / 10</div>
+  </div>
+  <div class="frame grid-2-7-5" style="padding-top:6vh">
+    <div style="display:flex; flex-direction:column; justify-content:space-between; gap:3vh">
+      <div>
+        <div class="kicker" data-anim>Display · 显示模块</div>
+        <h2 class="h-xl" style="white-space:nowrap" data-anim>595 动态扫描</h2>
+        <p class="lead" style="margin-top:3vh" data-anim>
+          通过 3 线串行接口驱动 74HC595 移位寄存器，控制 6 位共阳数码管进行动态扫描，视觉上呈现稳定清晰的数字显示。
+        </p>
+      </div>
+      <div class="callout" data-anim>
+        按键消抖计数器 CNT_MAX = 999,999，在 50MHz 系统时钟下对应 20ms 稳定判断窗口，有效消除机械抖动干扰。
+        <div class="callout-src">— key_filter 模块参数</div>
+      </div>
+    </div>
+    <div class="img-slot r-4x3" data-anim>
+      <div class="plus">+</div>
+      <div class="label">数码管显示效果<br>可替换为实拍照片</div>
+    </div>
+  </div>
+  <div class="foot">
+    <div>Page 08 · 显示驱动</div>
+    <div>74HC595</div>
+  </div>
+</section>
+
+<!-- P09 · 功能验证 · light -->
+<section class="slide light" data-animate="directional">
+  <div class="chrome">
+    <div>功能验证 · Verification</div>
+    <div>09 / 10</div>
+  </div>
+  <div class="frame" style="padding-top:5vh">
+    <div class="kicker" data-anim>Test Result · 实测结果</div>
+    <h2 class="h-xl" style="margin-bottom:4vh" data-anim>传感器功能验证</h2>
+
+    <div class="grid-2-6-6" style="gap:5vw 4vh">
+      <div data-anim="left" style="padding:3vh 2vw; border-left:3px solid currentColor; opacity:.55">
+        <div class="kicker" style="opacity:.9">遮挡传感器时</div>
+        <h3 class="h-md" style="margin-top:2vh">PS 值接近满量程</h3>
+        <ul style="margin-top:3vh; padding-left:1.2em; display:flex; flex-direction:column; gap:1.4vh; font-family:var(--sans-zh); font-size:max(14px,1.1vw); line-height:1.55">
+          <li>PS 读数 &gt; 900（满量程 1023）</li>
+          <li>ALS 光照度读数显著降低</li>
+          <li>数码管实时跳变并稳定</li>
+          <li>I2C 总线通信持续正常</li>
+        </ul>
+      </div>
+      <div data-anim="right" style="padding:3vh 2vw; border-left:3px solid currentColor">
+        <div class="kicker" style="opacity:.9">正常光照环境</div>
+        <h3 class="h-md" style="margin-top:2vh">PS 值接近零</h3>
+        <ul style="margin-top:3vh; padding-left:1.2em; display:flex; flex-direction:column; gap:1.4vh; font-family:var(--sans-zh); font-size:max(14px,1.1vw); line-height:1.55">
+          <li>PS 读数 &lt; 50（无目标遮挡）</li>
+          <li>ALS 随室内光强实时变化</li>
+          <li>lux 换算：原始值 × 0.35</li>
+          <li>按键切换 PS / ALS 显示正常</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="foot">
+    <div>Page 09 · 验证结果</div>
+    <div>Test Results</div>
+  </div>
+</section>
+
+<!-- P10 · 总结致谢 · hero dark -->
+<section class="slide hero dark">
+  <div class="chrome">
+    <div>总结 · Summary</div>
+    <div>10 / 10</div>
+  </div>
+  <div class="frame" style="display:grid; gap:8vh; align-content:center; min-height:80vh">
+    <div class="kicker" data-anim>Summary · 设计总结</div>
+    <h1 class="h-hero" style="font-size:7vw; line-height:1.15">
+      <span data-anim style="display:block">完整实现</span>
+      <span data-anim style="display:block">FPGA 光感</span>
+      <span data-anim style="display:block">采集系统</span>
+    </h1>
+    <p class="lead" style="max-width:55vw" data-anim>
+      设计涵盖 I2C 主机驱动、8 状态传感器控制状态机与 595 数码管动态扫描，经功能验证，PS 与 ALS 采集均正常工作。
+    </p>
+    <div class="meta-row" data-anim>
+      <span>感谢指导教师</span><span>·</span><span>课程设计</span><span>·</span><span>2026.06</span>
+    </div>
+  </div>
+  <div class="foot">
+    <div>谢谢聆听</div>
+    <div>— · —</div>
+  </div>
+</section>
+
+</div>
+
+<div id="nav"></div>
+
+<script>
+const VS = `attribute vec2 position;void main(){gl_Position=vec4(position,0.0,1.0);}`;
+
+const FS_DARK = `precision highp float;
+uniform vec2 u_resolution;uniform float u_time;uniform vec2 u_mouse;
+vec3 palette(float t,vec3 a,vec3 b,vec3 c,vec3 d){return a+b*cos(6.28318*(c*t+d));}
+void main(){
+  vec2 uv=gl_FragCoord.xy/u_resolution.xy;
+  vec2 p=uv*2.0-1.0;p.x*=u_resolution.x/u_resolution.y;
+  vec2 m=u_mouse*2.0-1.0;m.x*=u_resolution.x/u_resolution.y;
+  float md=length(p-m);
+  float mr=sin(md*15.0-u_time*4.0)*exp(-md*3.0);p+=mr*0.08;
+  vec2 p0=p;
+  for(float i=1.0;i<4.0;i++){
+    p.x+=0.1/i*sin(i*3.0*p.y+u_time*0.4)+0.05;
+    p.y+=0.1/i*cos(i*2.0*p.x+u_time*0.3)-0.05;
+  }
+  float r=length(p);float ang=atan(p.y,p.x);
+  vec3 a=vec3(0.12,0.12,0.13);
+  vec3 b=vec3(0.03,0.04,0.05);
+  vec3 c=vec3(1.0,1.0,1.0);
+  vec3 d=vec3(0.1,0.2,0.4);
+  vec3 col=palette(r*1.5+p0.x*0.5+u_time*0.1,a,b,c,d);
+  float disp=sin(r*25.0-u_time*1.5+ang*2.0)*0.5+0.5;
+  col+=vec3(disp*0.015,disp*0.01,disp*0.02);
+  float hi=pow(sin(p.x*4.0+p.y*3.0+u_time)*0.5+0.5,8.0);
+  col+=hi*0.08;
+  vec3 base=vec3(0.05,0.05,0.06);
+  col=mix(base,col,0.85);
+  gl_FragColor=vec4(col,1.0);
+}`;
+
+const FS_LIGHT = `precision highp float;
+uniform vec2 u_resolution;uniform float u_time;uniform vec2 u_mouse;
+float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+float noise(vec2 p){
+  vec2 i=floor(p),f=fract(p);
+  float a=hash(i),b=hash(i+vec2(1,0));
+  float c=hash(i+vec2(0,1)),d=hash(i+vec2(1,1));
+  vec2 u=f*f*(3.0-2.0*f);
+  return mix(a,b,u.x)+(c-a)*u.y*(1.0-u.x)+(d-b)*u.x*u.y;
+}
+float fbm(vec2 p){
+  float v=0.0,a=0.5;
+  mat2 m=mat2(0.80,0.60,-0.60,0.80);
+  for(int i=0;i<5;i++){v+=a*noise(p);p=m*p*2.02;a*=0.5;}
+  return v;
+}
+void main(){
+  vec2 uv=gl_FragCoord.xy/u_resolution.xy;
+  vec2 p=uv;p.x*=u_resolution.x/u_resolution.y;
+  vec2 m=u_mouse;m.x*=u_resolution.x/u_resolution.y;
+  vec2 md=p-m;float dl=length(md);
+  p+=normalize(md+vec2(0.0001))*exp(-dl*5.0)*0.03;
+  vec2 q=vec2(fbm(p*1.8+u_time*0.07),fbm(p*1.8+vec2(5.2,1.3)+u_time*0.06));
+  vec2 r=vec2(fbm(p*2.0+q*1.3+vec2(1.7,9.2)+u_time*0.05),
+              fbm(p*2.0+q*1.3+vec2(8.3,2.8)+u_time*0.04));
+  float f=fbm(p*2.2+r*1.5);
+  vec3 silverDark=vec3(0.86,0.85,0.84);
+  vec3 paper=vec3(0.955,0.945,0.925);
+  vec3 col=mix(silverDark,paper,f);
+  float ph=r.x*2.2+u_time*0.35;
+  col+=vec3(0.78,0.62,0.92)*sin(ph)*0.055;
+  col+=vec3(0.55,0.72,0.95)*sin(ph*0.8+2.0)*0.05;
+  float hl=smoothstep(0.48,0.92,f);
+  col+=hl*0.06;
+  gl_FragColor=vec4(col,1.0);
+}`;
+
+const mouse={x:0.5,y:0.5};
+addEventListener('mousemove',e=>{mouse.x=e.clientX/innerWidth;mouse.y=e.clientY/innerHeight});
+
+function bootGL(canvasId, fsSrc){
+  const canvas=document.getElementById(canvasId);
+  const gl=canvas.getContext('webgl',{alpha:false,antialias:true});
+  if(!gl) return ()=>false;
+  const mk=(t,s)=>{const sh=gl.createShader(t);gl.shaderSource(sh,s);gl.compileShader(sh);return sh};
+  const prog=gl.createProgram();
+  gl.attachShader(prog,mk(gl.VERTEX_SHADER,VS));
+  gl.attachShader(prog,mk(gl.FRAGMENT_SHADER,fsSrc));
+  gl.linkProgram(prog);gl.useProgram(prog);
+  const buf=gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER,buf);
+  gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,-1,1,1,-1,1,1]),gl.STATIC_DRAW);
+  const pos=gl.getAttribLocation(prog,'position');
+  gl.enableVertexAttribArray(pos);gl.vertexAttribPointer(pos,2,gl.FLOAT,false,0,0);
+  const lRes=gl.getUniformLocation(prog,'u_resolution');
+  const lT=gl.getUniformLocation(prog,'u_time');
+  const lM=gl.getUniformLocation(prog,'u_mouse');
+  const resize=()=>{
+    const d=Math.min(window.devicePixelRatio||1,2);
+    canvas.width=innerWidth*d;canvas.height=innerHeight*d;
+    gl.viewport(0,0,canvas.width,canvas.height);
+  };
+  addEventListener('resize',resize);resize();
+  return (tSec)=>{
+    gl.uniform2f(lRes,canvas.width,canvas.height);
+    gl.uniform1f(lT,tSec);
+    gl.uniform2f(lM,mouse.x,1-mouse.y);
+    gl.drawArrays(gl.TRIANGLES,0,6);
+    return true;
+  };
+}
+const drawDark=bootGL('bg-dark',FS_DARK);
+const drawLight=bootGL('bg-light',FS_LIGHT);
+const t0=Date.now();
+(function loop(){
+  const t=(Date.now()-t0)/1000;
+  drawDark(t);drawLight(t);
+  requestAnimationFrame(loop);
+})();
+
+const deck=document.getElementById('deck');
+const slides=deck.querySelectorAll('.slide');
+const nav=document.getElementById('nav');
+let idx=0,total=slides.length,lock=false;
+
+deck.style.width=(total*100)+'vw';
+
+slides.forEach((s,i)=>{
+  const b=document.createElement('button');
+  b.className='dot';b.dataset.i=i;b.setAttribute('aria-label','Page '+(i+1));
+  b.onclick=()=>go(i);
+  nav.appendChild(b);
+});
+
+function go(n){
+  if(lock)return;
+  idx=Math.max(0,Math.min(total-1,n));
+  deck.style.transform=`translateX(${-idx*100}vw)`;
+  nav.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('active',i===idx));
+  const el=slides[idx];
+  const th=el.dataset.theme || (el.classList.contains('light')?'light':(el.classList.contains('dark')?'dark':'dark'));
+  document.body.classList.toggle('light-bg',th==='light');
+  if(window.__playSlide) setTimeout(()=>window.__playSlide(idx), 450);
+  lock=true;setTimeout(()=>lock=false,700);
+}
+
+let overviewOn=false;
+const ov=document.createElement('div');
+ov.id='overview';
+ov.style.cssText='position:fixed;inset:0;z-index:100;background:rgba(var(--ink-rgb),.92);backdrop-filter:blur(12px);display:none;overflow-y:auto;padding:4vh 4vw';
+document.body.appendChild(ov);
+
+function buildOverview(){
+  ov.innerHTML='';
+  const grid=document.createElement('div');
+  grid.style.cssText='display:grid;grid-template-columns:repeat(4,1fr);gap:2vh 1.6vw;max-width:90vw;margin:0 auto';
+  slides.forEach((s,i)=>{
+    const card=document.createElement('div');
+    card.style.cssText='cursor:pointer;border-radius:6px;overflow:hidden;border:2px solid '+(i===idx?'rgba(var(--paper-rgb),.8)':'rgba(var(--paper-rgb),.15)')+';transition:border-color .2s';
+    card.onmouseenter=()=>card.style.borderColor='rgba(var(--paper-rgb),.6)';
+    card.onmouseleave=()=>card.style.borderColor=i===idx?'rgba(var(--paper-rgb),.8)':'rgba(var(--paper-rgb),.15)';
+    const wrap=document.createElement('div');
+    wrap.style.cssText='width:100%;aspect-ratio:16/9;overflow:hidden;position:relative;pointer-events:none;background:'+(s.classList.contains('light')?'var(--paper)':'var(--ink)');
+    const clone=s.cloneNode(true);
+    clone.style.cssText='width:100vw;height:100vh;transform:scale('+(1/4.5)+');transform-origin:top left;position:absolute;top:0;left:0;pointer-events:none';
+    wrap.appendChild(clone);
+    const label=document.createElement('div');
+    label.style.cssText='padding:6px 10px;font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--paper);opacity:.7';
+    label.textContent=(i+1)+' / '+total;
+    card.appendChild(wrap);
+    card.appendChild(label);
+    card.onclick=()=>{toggleOverview();go(i)};
+    grid.appendChild(card);
+  });
+  ov.appendChild(grid);
+}
+
+function toggleOverview(){
+  overviewOn=!overviewOn;
+  if(overviewOn){buildOverview();ov.style.display='block';}
+  else{ov.style.display='none';}
+}
+
+addEventListener('keydown',e=>{
+  if(e.key==='Escape'){e.preventDefault();toggleOverview();return;}
+  if(overviewOn)return;
+  if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' '||e.key==='ArrowDown'){
+    if(window.__pipeAdvance && window.__pipeAdvance()) return;
+    go(idx+1);
+    return;
+  }
+  if(e.key==='ArrowLeft'||e.key==='PageUp'||e.key==='ArrowUp')go(idx-1);
+  if(e.key==='Home')go(0);
+  if(e.key==='End')go(total-1);
+});
+
+let wheelTO=null,wheelAcc=0;
+addEventListener('wheel',e=>{
+  wheelAcc+=e.deltaY+e.deltaX;
+  if(Math.abs(wheelAcc)>50){
+    if(wheelAcc>0 && window.__pipeAdvance && window.__pipeAdvance()){
+      wheelAcc=0;
+    }else{
+      go(idx+(wheelAcc>0?1:-1));wheelAcc=0;
+    }
+  }
+  clearTimeout(wheelTO);wheelTO=setTimeout(()=>wheelAcc=0,150);
+},{passive:true});
+
+let tx=0,ty=0;
+addEventListener('touchstart',e=>{tx=e.touches[0].clientX;ty=e.touches[0].clientY},{passive:true});
+addEventListener('touchend',e=>{
+  const dx=(e.changedTouches[0].clientX-tx);
+  const dy=(e.changedTouches[0].clientY-ty);
+  if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)){
+    if(dx<0 && window.__pipeAdvance && window.__pipeAdvance()) return;
+    go(idx+(dx<0?1:-1));
+  }
+},{passive:true});
+
+go(0);
+</script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<script>lucide.createIcons();</script>
+
+<script type="module">
+let motion;
+try {
+  motion = await import('./assets/motion.min.js');
+} catch(e1) {
+  try {
+    motion = await import('https://cdn.jsdelivr.net/npm/motion@11.11.17/+esm');
+  } catch(e2) {
+    console.warn('[motion] local + CDN both failed, disabling animations', e1, e2);
+    document.querySelectorAll('[data-anim]').forEach(el=>{el.style.opacity='1';el.style.transform='none'});
+    document.querySelectorAll('[data-animate="pipeline"] [data-anim]').forEach(el=>el.style.opacity='1');
+  }
+}
+
+if(motion){
+  const { animate, stagger } = motion;
+  const EASE = [.22, 1, .36, 1];
+  const slides = [...document.querySelectorAll('.slide')];
+  let pipeStep = -1;
+  let lastIdx = -1;
+
+  function resetAnims(slide){
+    slide.querySelectorAll('[data-anim]').forEach(el=>{
+      el.style.opacity='';
+      el.style.transform='';
+    });
+  }
+
+  function playSlide(i){
+    const slide = slides[i];
+    if(!slide) return;
+    lastIdx = i;
+    const recipe = slide.dataset.animate || (slide.classList.contains('hero') ? 'hero' : 'cascade');
+
+    if(recipe === 'pipeline'){
+      pipeStep = -1;
+      slide.querySelectorAll('[data-anim]').forEach(el=>{
+        el.style.opacity='0.15';
+        el.style.transform='none';
+      });
+      return;
+    }
+
+    resetAnims(slide);
+    const all = [...slide.querySelectorAll('[data-anim]')];
+    if(!all.length) return;
+
+    if(recipe === 'directional'){
+      const lefts  = all.filter(el=>el.dataset.anim==='left');
+      const divs   = all.filter(el=>el.dataset.anim==='divider');
+      const rights = all.filter(el=>el.dataset.anim==='right');
+      const others = all.filter(el=>!['left','right','divider'].includes(el.dataset.anim));
+      if(others.length) animate(others, {opacity:[0,1], y:[12,0]}, {duration:.6, delay:stagger(.1, {start:.15}), easing:EASE});
+      if(lefts.length)  animate(lefts,  {opacity:[0,1], x:[-24,0]}, {duration:.8, delay:.35, easing:EASE});
+      if(divs.length)   animate(divs,   {opacity:[0,.25]},          {duration:.5, delay:.9});
+      if(rights.length) animate(rights, {opacity:[0,1], x:[24,0]},  {duration:.8, delay:1.0, easing:EASE});
+      return;
+    }
+
+    if(recipe === 'quote'){
+      const lines = all.filter(el=>el.dataset.anim==='line');
+      const others = all.filter(el=>el.dataset.anim!=='line');
+      if(others.length) animate(others, {opacity:[0,1], y:[8,0]},    {duration:.6, delay:stagger(.12, {start:.2}), easing:EASE});
+      if(lines.length)  animate(lines,  {opacity:[.35,1], y:[10,0]}, {duration:.8, delay:stagger(.55, {start:.5}), easing:EASE});
+      return;
+    }
+
+    if(recipe === 'hero'){
+      animate(all, {opacity:[0,1], y:[14,0]}, {duration:.9, delay:stagger(.16, {start:.2}), easing:EASE});
+      return;
+    }
+
+    animate(all, {opacity:[0,1], y:[16,0]}, {duration:.75, delay:stagger(.1, {start:.15}), easing:EASE});
+  }
+
+  function pipeAdvance(){
+    const slide = slides[lastIdx];
+    if(!slide || slide.dataset.animate !== 'pipeline') return false;
+    const steps  = [...slide.querySelectorAll('[data-anim="step"]')];
+    const arrows = [...slide.querySelectorAll('[data-anim="arrow"]')];
+    if(pipeStep >= steps.length - 1) return false;
+    pipeStep++;
+    animate(steps[pipeStep], {opacity:[0.15,1], y:[8,0]}, {duration:.5, easing:EASE});
+    if(pipeStep > 0 && arrows[pipeStep-1]){
+      animate(arrows[pipeStep-1], {opacity:[0.15,.7]}, {duration:.3, delay:.15});
+    }
+    return true;
+  }
+
+  window.__playSlide = playSlide;
+  window.__pipeAdvance = pipeAdvance;
+
+  playSlide(0);
+}
+</script>
+</body>
+</html>
